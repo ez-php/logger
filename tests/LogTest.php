@@ -6,6 +6,7 @@ namespace Tests;
 
 use EzPhp\Logging\Log;
 use EzPhp\Logging\LoggerInterface;
+use EzPhp\Logging\LogLevel;
 use EzPhp\Logging\NullDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -18,6 +19,7 @@ use RuntimeException;
  */
 #[CoversClass(Log::class)]
 #[UsesClass(NullDriver::class)]
+#[UsesClass(LogLevel::class)]
 final class LogTest extends TestCase
 {
     /**
@@ -51,11 +53,11 @@ final class LogTest extends TestCase
     public function test_set_logger_wires_facade(): void
     {
         $spy = new class () implements LoggerInterface {
-            /** @var list<array{level: string, message: string}> */
+            /** @var list<array{level: LogLevel, message: string}> */
             public array $recorded = [];
 
             /** @param array<string, mixed> $context */
-            public function log(string $level, string $message, array $context = []): void
+            public function log(LogLevel $level, string $message, array $context = []): void
             {
                 $this->recorded[] = ['level' => $level, 'message' => $message];
             }
@@ -63,31 +65,31 @@ final class LogTest extends TestCase
             /** @param array<string, mixed> $context */
             public function debug(string $message, array $context = []): void
             {
-                $this->log('debug', $message);
+                $this->log(LogLevel::DEBUG, $message);
             }
 
             /** @param array<string, mixed> $context */
             public function info(string $message, array $context = []): void
             {
-                $this->log('info', $message);
+                $this->log(LogLevel::INFO, $message);
             }
 
             /** @param array<string, mixed> $context */
             public function warning(string $message, array $context = []): void
             {
-                $this->log('warning', $message);
+                $this->log(LogLevel::WARNING, $message);
             }
 
             /** @param array<string, mixed> $context */
             public function error(string $message, array $context = []): void
             {
-                $this->log('error', $message);
+                $this->log(LogLevel::ERROR, $message);
             }
 
             /** @param array<string, mixed> $context */
             public function critical(string $message, array $context = []): void
             {
-                $this->log('critical', $message);
+                $this->log(LogLevel::CRITICAL, $message);
             }
         };
 
@@ -98,12 +100,12 @@ final class LogTest extends TestCase
         Log::warning('c');
         Log::error('d');
         Log::critical('e');
-        Log::log('info', 'f');
+        Log::log(LogLevel::INFO, 'f');
 
         $this->assertCount(6, $spy->recorded);
-        $this->assertSame('debug', $spy->recorded[0]['level']);
+        $this->assertSame(LogLevel::DEBUG, $spy->recorded[0]['level']);
         $this->assertSame('a', $spy->recorded[0]['message']);
-        $this->assertSame('critical', $spy->recorded[4]['level']);
+        $this->assertSame(LogLevel::CRITICAL, $spy->recorded[4]['level']);
     }
 
     /**

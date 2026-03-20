@@ -18,19 +18,19 @@ final class LogLevelTest extends TestCase
     /**
      * @return void
      */
-    public function test_constants_have_expected_values(): void
+    public function test_cases_have_expected_string_values(): void
     {
-        $this->assertSame('debug', LogLevel::DEBUG);
-        $this->assertSame('info', LogLevel::INFO);
-        $this->assertSame('warning', LogLevel::WARNING);
-        $this->assertSame('error', LogLevel::ERROR);
-        $this->assertSame('critical', LogLevel::CRITICAL);
+        $this->assertSame('debug', LogLevel::DEBUG->value);
+        $this->assertSame('info', LogLevel::INFO->value);
+        $this->assertSame('warning', LogLevel::WARNING->value);
+        $this->assertSame('error', LogLevel::ERROR->value);
+        $this->assertSame('critical', LogLevel::CRITICAL->value);
     }
 
     /**
      * @return void
      */
-    public function test_all_returns_all_levels_in_order(): void
+    public function test_all_returns_all_cases_in_order(): void
     {
         $levels = LogLevel::all();
 
@@ -41,5 +41,14 @@ final class LogLevelTest extends TestCase
             LogLevel::ERROR,
             LogLevel::CRITICAL,
         ], $levels);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_from_string_resolves_case(): void
+    {
+        $this->assertSame(LogLevel::INFO, LogLevel::from('info'));
+        $this->assertSame(LogLevel::ERROR, LogLevel::from('error'));
     }
 }

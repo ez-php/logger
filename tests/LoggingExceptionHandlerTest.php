@@ -9,6 +9,7 @@ use EzPhp\Http\Request;
 use EzPhp\Http\Response;
 use EzPhp\Logging\LoggerInterface;
 use EzPhp\Logging\LoggingExceptionHandler;
+use EzPhp\Logging\LogLevel;
 use EzPhp\Logging\NullDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -22,6 +23,7 @@ use Throwable;
  */
 #[CoversClass(LoggingExceptionHandler::class)]
 #[UsesClass(NullDriver::class)]
+#[UsesClass(LogLevel::class)]
 final class LoggingExceptionHandlerTest extends TestCase
 {
     /**
@@ -30,11 +32,11 @@ final class LoggingExceptionHandlerTest extends TestCase
     public function test_logs_exception_message_and_metadata(): void
     {
         $spy = new class () implements LoggerInterface {
-            /** @var list<array{level: string, message: string, context: array<string, mixed>}> */
+            /** @var list<array{level: LogLevel, message: string, context: array<string, mixed>}> */
             public array $logged = [];
 
             /** @param array<string, mixed> $context */
-            public function log(string $level, string $message, array $context = []): void
+            public function log(LogLevel $level, string $message, array $context = []): void
             {
                 $this->logged[] = ['level' => $level, 'message' => $message, 'context' => $context];
             }
@@ -42,31 +44,31 @@ final class LoggingExceptionHandlerTest extends TestCase
             /** @param array<string, mixed> $context */
             public function debug(string $message, array $context = []): void
             {
-                $this->log('debug', $message, $context);
+                $this->log(LogLevel::DEBUG, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function info(string $message, array $context = []): void
             {
-                $this->log('info', $message, $context);
+                $this->log(LogLevel::INFO, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function warning(string $message, array $context = []): void
             {
-                $this->log('warning', $message, $context);
+                $this->log(LogLevel::WARNING, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function error(string $message, array $context = []): void
             {
-                $this->log('error', $message, $context);
+                $this->log(LogLevel::ERROR, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function critical(string $message, array $context = []): void
             {
-                $this->log('critical', $message, $context);
+                $this->log(LogLevel::CRITICAL, $message, $context);
             }
         };
 
@@ -77,7 +79,7 @@ final class LoggingExceptionHandlerTest extends TestCase
         $handler->render($e, new Request('GET', '/'));
 
         $this->assertCount(1, $spy->logged);
-        $this->assertSame('error', $spy->logged[0]['level']);
+        $this->assertSame(LogLevel::ERROR, $spy->logged[0]['level']);
         $this->assertSame('something broke', $spy->logged[0]['message']);
         $this->assertSame(RuntimeException::class, $spy->logged[0]['context']['exception']);
         $this->assertSame(42, $spy->logged[0]['context']['code']);
@@ -112,7 +114,7 @@ final class LoggingExceptionHandlerTest extends TestCase
             }
 
             /** @param array<string, mixed> $context */
-            public function log(string $level, string $message, array $context = []): void
+            public function log(LogLevel $level, string $message, array $context = []): void
             {
                 $this->order->append('log');
             }
@@ -120,31 +122,31 @@ final class LoggingExceptionHandlerTest extends TestCase
             /** @param array<string, mixed> $context */
             public function debug(string $message, array $context = []): void
             {
-                $this->log('debug', $message, $context);
+                $this->log(LogLevel::DEBUG, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function info(string $message, array $context = []): void
             {
-                $this->log('info', $message, $context);
+                $this->log(LogLevel::INFO, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function warning(string $message, array $context = []): void
             {
-                $this->log('warning', $message, $context);
+                $this->log(LogLevel::WARNING, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function error(string $message, array $context = []): void
             {
-                $this->log('error', $message, $context);
+                $this->log(LogLevel::ERROR, $message, $context);
             }
 
             /** @param array<string, mixed> $context */
             public function critical(string $message, array $context = []): void
             {
-                $this->log('critical', $message, $context);
+                $this->log(LogLevel::CRITICAL, $message, $context);
             }
         };
 

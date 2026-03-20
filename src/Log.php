@@ -42,13 +42,13 @@ final class Log
     }
 
     /**
-     * @param string               $level
+     * @param LogLevel             $level
      * @param string               $message
      * @param array<string, mixed> $context
      *
      * @return void
      */
-    public static function log(string $level, string $message, array $context = []): void
+    public static function log(LogLevel $level, string $message, array $context = []): void
     {
         self::getLogger()->log($level, $message, $context);
     }

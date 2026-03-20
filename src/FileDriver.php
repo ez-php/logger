@@ -25,13 +25,13 @@ final class FileDriver implements LoggerInterface
     }
 
     /**
-     * @param string               $level
+     * @param LogLevel             $level
      * @param string               $message
      * @param array<string, mixed> $context
      *
      * @return void
      */
-    public function log(string $level, string $message, array $context = []): void
+    public function log(LogLevel $level, string $message, array $context = []): void
     {
         if (!is_dir($this->directory)) {
             mkdir($this->directory, 0o755, true);
@@ -108,16 +108,16 @@ final class FileDriver implements LoggerInterface
     }
 
     /**
-     * @param string               $level
+     * @param LogLevel             $level
      * @param string               $message
      * @param array<string, mixed> $context
      *
      * @return string
      */
-    private function formatLine(string $level, string $message, array $context): string
+    private function formatLine(LogLevel $level, string $message, array $context): string
     {
         $datetime = date('Y-m-d H:i:s');
-        $upper = strtoupper($level);
+        $upper = strtoupper($level->value);
         $ctx = $context !== [] ? ' ' . (json_encode($context) ?: '{}') : '';
 
         return "[$datetime] $upper: $message$ctx\n";
