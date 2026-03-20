@@ -5,28 +5,28 @@ declare(strict_types=1);
 namespace EzPhp\Logging;
 
 /**
- * Class LogLevel
+ * Enum LogLevel
  *
  * Supported log severity levels, ordered from least to most severe.
  *
  * @package EzPhp\Logging
  */
-final class LogLevel
+enum LogLevel: string
 {
-    public const DEBUG = 'debug';
+    case DEBUG = 'debug';
 
-    public const INFO = 'info';
+    case INFO = 'info';
 
-    public const WARNING = 'warning';
+    case WARNING = 'warning';
 
-    public const ERROR = 'error';
+    case ERROR = 'error';
 
-    public const CRITICAL = 'critical';
+    case CRITICAL = 'critical';
 
     /**
      * Returns all levels in ascending severity order.
      *
-     * @return list<string>
+     * @return list<self>
      */
     public static function all(): array
     {

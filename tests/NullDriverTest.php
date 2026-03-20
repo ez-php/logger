@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use EzPhp\Logging\LogLevel;
 use EzPhp\Logging\NullDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 
 /**
  * Class NullDriverTest
@@ -13,6 +15,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @package Tests
  */
 #[CoversClass(NullDriver::class)]
+#[UsesClass(LogLevel::class)]
 final class NullDriverTest extends TestCase
 {
     /**
@@ -21,7 +24,7 @@ final class NullDriverTest extends TestCase
     public function test_log_produces_no_output(): void
     {
         ob_start();
-        (new NullDriver())->log('error', 'msg');
+        (new NullDriver())->log(LogLevel::ERROR, 'msg');
         $output = (string) ob_get_clean();
 
         $this->assertSame('', $output);

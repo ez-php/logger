@@ -18,13 +18,13 @@ final class LogLevelTest extends TestCase
     /**
      * @return void
      */
-    public function test_constants_have_expected_values(): void
+    public function test_cases_have_expected_values(): void
     {
-        $this->assertSame('debug', LogLevel::DEBUG);
-        $this->assertSame('info', LogLevel::INFO);
-        $this->assertSame('warning', LogLevel::WARNING);
-        $this->assertSame('error', LogLevel::ERROR);
-        $this->assertSame('critical', LogLevel::CRITICAL);
+        $this->assertSame('debug', LogLevel::DEBUG->value);
+        $this->assertSame('info', LogLevel::INFO->value);
+        $this->assertSame('warning', LogLevel::WARNING->value);
+        $this->assertSame('error', LogLevel::ERROR->value);
+        $this->assertSame('critical', LogLevel::CRITICAL->value);
     }
 
     /**

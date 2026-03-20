@@ -14,13 +14,13 @@ namespace EzPhp\Logging;
 final class NullDriver implements LoggerInterface
 {
     /**
-     * @param string               $level
+     * @param LogLevel             $level
      * @param string               $message
      * @param array<string, mixed> $context
      *
      * @return void
      */
-    public function log(string $level, string $message, array $context = []): void
+    public function log(LogLevel $level, string $message, array $context = []): void
     {
     }
 

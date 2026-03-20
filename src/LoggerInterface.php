@@ -16,13 +16,13 @@ interface LoggerInterface
     /**
      * Log a message at an arbitrary level.
      *
-     * @param string               $level   One of the LogLevel constants.
+     * @param LogLevel             $level   Severity level.
      * @param string               $message Human-readable description.
      * @param array<string, mixed> $context Optional structured context data.
      *
      * @return void
      */
-    public function log(string $level, string $message, array $context = []): void;
+    public function log(LogLevel $level, string $message, array $context = []): void;
 
     /**
      * @param string               $message
