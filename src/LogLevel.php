@@ -32,4 +32,45 @@ enum LogLevel: string
     {
         return self::cases();
     }
+
+    /**
+     * Returns the numeric severity of this level (DEBUG=0 … CRITICAL=4).
+     *
+     * @return int
+     */
+    public function severity(): int
+    {
+        return match ($this) {
+            self::DEBUG => 0,
+            self::INFO => 1,
+            self::WARNING => 2,
+            self::ERROR => 3,
+            self::CRITICAL => 4,
+        };
+    }
+
+    /**
+     * Returns true when this level is at least as severe as the given minimum.
+     *
+     * @param LogLevel $min The minimum required severity level.
+     *
+     * @return bool
+     */
+    public function isAtLeast(LogLevel $min): bool
+    {
+        return $this->severity() >= $min->severity();
+    }
+
+    /**
+     * Resolve a level from its string value. Wraps the native enum from() for
+     * explicit, traceable usage in service providers and configuration readers.
+     *
+     * @param string $value The string value of the level (e.g. 'info', 'error').
+     *
+     * @return self
+     */
+    public static function fromString(string $value): self
+    {
+        return self::from($value);
+    }
 }

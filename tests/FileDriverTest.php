@@ -34,8 +34,10 @@ final class FileDriverTest extends TestCase
      */
     protected function tearDown(): void
     {
-        foreach (glob($this->dir . '/*.log') ?: [] as $file) {
-            unlink($file);
+        foreach (glob($this->dir . '/*') ?: [] as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
         }
 
         if (is_dir($this->dir)) {
@@ -168,6 +170,39 @@ final class FileDriverTest extends TestCase
     {
         (new FileDriver($this->dir))->critical('crit msg');
         $this->assertStringContainsString('CRITICAL', $this->readLog());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_rotates_file_when_max_bytes_exceeded(): void
+    {
+        // Use a very small maxBytes so that a single write triggers rotation on the second write
+        $driver = new FileDriver($this->dir, 1);
+
+        $driver->log(LogLevel::INFO, 'first entry');
+        // After the first write the file exists and exceeds 1 byte.
+        // The second write should rotate it before appending.
+        $driver->log(LogLevel::INFO, 'second entry');
+
+        // Count all files (original .log + at least one archive)
+        $all = glob($this->dir . '/*') ?: [];
+        $this->assertGreaterThanOrEqual(2, count($all), 'Expected original log file plus at least one archive.');
+    }
+
+    /**
+     * @return void
+     */
+    public function test_no_rotation_when_max_bytes_zero(): void
+    {
+        $driver = new FileDriver($this->dir);
+
+        for ($i = 0; $i < 20; $i++) {
+            $driver->log(LogLevel::DEBUG, "entry $i");
+        }
+
+        $all = glob($this->dir . '/*') ?: [];
+        $this->assertCount(1, $all, 'Only the single daily log file should exist when maxBytes is 0.');
     }
 
     /**
