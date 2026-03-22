@@ -146,6 +146,12 @@ After scaffolding:
 
 Only set a port for services the module actually uses. Modules without external services need no port config.
 
+### 4 — Monorepo scripts
+
+`packages.sh` at the project root is the **central package registry**. Both `push_all.sh` and `update_all.sh` source it — the package list lives in exactly one place.
+
+When adding a new module, add `"$ROOT/modules/<name>"` to the `PACKAGES` array in `packages.sh` in **alphabetical order** among the other `modules/*` entries (before `framework`, `ez-php`, and the root entry at the end).
+
 ---
 
 # Package: ez-php/logging
@@ -305,4 +311,3 @@ The `ExceptionHandler` re-binding in `register()` safely overrides the core bind
 | Request-level log context (request ID, user ID) | Middleware in the application that calls `Log::setContext()` — not implemented here |
 | PSR-3 compatibility shim | Application layer — implement a thin adapter if PSR-3 is required |
 | Database query logging | `ez-php/orm` module (optional query log decorator) |
-
