@@ -6,6 +6,7 @@ namespace Tests;
 
 use EzPhp\Contracts\ExceptionHandlerInterface;
 use EzPhp\Http\Request;
+use EzPhp\Http\RequestInterface;
 use EzPhp\Http\Response;
 use EzPhp\Logging\LoggerInterface;
 use EzPhp\Logging\LoggingExceptionHandler;
@@ -156,7 +157,7 @@ final class LoggingExceptionHandlerTest extends TestCase
             {
             }
 
-            public function render(Throwable $e, Request $request): Response
+            public function render(Throwable $e, RequestInterface $request): Response
             {
                 $this->order->append('render');
                 return new Response('ok');
@@ -180,7 +181,7 @@ final class LoggingExceptionHandlerTest extends TestCase
             {
             }
 
-            public function render(Throwable $e, Request $request): Response
+            public function render(Throwable $e, RequestInterface $request): Response
             {
                 return $this->response;
             }
